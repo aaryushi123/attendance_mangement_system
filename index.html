@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <style>
+        /* Same CSS as before */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: radial-gradient(rgb(82, 100, 237),rgb(245, 136, 216));
+            color: #444;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.5em;
+            text-shadow: 2px 2px #444;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        div {
+            margin: 10px 0;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input {
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+
+    <h1>Attendance Management System</h1>
+    <div class="container">
+        <div>
+            <label for="studentName">Name:</label>
+            <input type="text" id="studentName" required>
+        </div>
+        <div>
+            <label for="studentClass">Class/Group:</label>
+            <input type="text" id="studentClass" required>
+        </div>
+        <div>
+            <label for="rollNumber">Roll Number:</label>
+            <input type="text" id="rollNumber" required>
+        </div>
+        <div>
+            <label for="attendanceDate">Date:</label>
+            <input type="text" id="attendanceDate" value="" readonly>
+        </div>
+        <button onclick="markAttendance()">Submit</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('attendanceDate').value = today;
+        });
+
+        function markAttendance() {
+            const name = document.getElementById('studentName').value;
+            const studentClass = document.getElementById('studentClass').value;
+            const rollNumber = document.getElementById('rollNumber').value;
+            const date = document.getElementById('attendanceDate').value;
+
+            if (name.trim() === '' || studentClass.trim() === '' || rollNumber.trim() === '') {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+            const isDuplicate = attendance.some(record => record.name === name && record.date === date);
+
+            if (isDuplicate) {
+                alert('Attendance for today is already marked.');
+            } else {
+                attendance.push({ name, studentClass, rollNumber, date });
+                localStorage.setItem('attendance', JSON.stringify(attendance));
+                alert('Your attendance has been marked.');
+                window.location.href = 'attendance.html'; // Redirect to attendance list
+            }
+        }
+    </script>
+</body>
+</html>
